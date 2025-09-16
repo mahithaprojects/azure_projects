@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User App • Post</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 520px; }
+    label { display:block; margin: .6rem 0 .2rem; }
+    input { width:100%; padding:.6rem; font-size:1rem; }
+    button { margin-top: 1rem; padding:.7rem 1rem; font-size:1rem; }
+    #msg { margin-top: 1rem; white-space: pre-wrap; }
+    a { display:inline-block; margin-bottom:1rem; }
+  </style>
+</head>
+<body>
+  <a href="index.html">← Back</a>
+  <h2>Create User</h2>
+
+  <label for="id">ID</label>
+  <input id="id" type="number" placeholder="e.g., 2" required />
+
+  <label for="name">Name</label>
+  <input id="name" type="text" placeholder="e.g., mahi" required />
+
+  <label for="dept">Department</label>
+  <input id="dept" type="text" placeholder="e.g., IT" required />
+
+  <button id="submitBtn">Post to /users</button>
+  <div id="msg"></div>
+
+  <script>
+    // Change this if your backend is hosted elsewhere (e.g., 'https://yourapp.azurewebsites.net')
+    const BASE_URL = "";
+
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+      const id = document.getElementById("id").value.trim();
+      const name = document.getElementById("name").value.trim();
+      const department = document.getElementById("dept").value.trim();
+
+      if (!id || !name || !department) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BASE_URL}/users`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: Number(id), name, department })
+        });
+
+        const text = await res.text();
+        document.getElementById("msg").textContent =
+          res.ok ? `✅ Success:\n${text}` : `❌ Error ${res.status}:\n${text}`;
+      } catch (err) {
+        document.getElementById("msg").textContent = `🌐 Network error:\n${err}`;
+      }
+    });
+  </script>
+</body>
+</html>
